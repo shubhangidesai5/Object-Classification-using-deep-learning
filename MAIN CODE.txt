@@ -1,0 +1,202 @@
+from darkflow.net.build import TFNet
+import cv2
+import pygame
+from threading import Thread
+import time
+import numpy as np
+pygame.mixer.init()
+pygame.mixer.music.load("cut_alert.mp3")
+
+def alert_play():
+    pygame.mixer.music.play()
+    time.sleep(1)
+
+class_labels = ['person', 'car', 'traffic light', 'stop sign', 'parking meter', 'truck', 'bus', 'motorbike', 'bicycle']
+
+cap = cv2.VideoCapture(0)
+options = {"model": "cfg/yolov2.cfg", "load": "bin/yolov2.weights", "threshold": 0.7, 'gpu': 0.8}
+tfnet = TFNet(options)
+
+while cap.isOpened():
+    ret, imgcv = cap.read()
+    # imgcv = np.array(imgcv, dtype="float32")
+    result = tfnet.return_predict(imgcv)
+
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    object_count = 0
+    for res in result:
+        if res['label'] in class_labels:
+            object_count += 1
+            cv2.putText(imgcv, res['label'], (res['topleft']['x'], res['topleft']['y'] - 10), font, 1,
+                        (0, 0, 255), 1, 1)
+            imgcv = cv2.rectangle(imgcv, (res['topleft']['x'], res['topleft']['y']),
+                                  (res['bottomright']['x'], res['bottomright']['y']), (255, 128, 64), 2)
+    if object_count <= 2:
+        Thread(target=alert_play).start()
+
+    cv2.imshow("output", imgcv)
+    if cv2.waitKey(1) == 27:
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
